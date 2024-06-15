@@ -23,7 +23,11 @@
 <!--===============================================================================================-->
 </head>
 <body>
-	
+	<div class="error-message">
+		{% if login is False%}
+			<h3>Username or password is wrong</h3>
+		{% endif %}
+	</div>
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100">
@@ -43,7 +47,6 @@
 							<i class="fa fa-envelope" aria-hidden="true"></i>
 						</span>
 					</div>
-
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
 						<input class="input100" type="password" name="pass" placeholder="Password">
 						<span class="focus-input100"></span>
@@ -51,7 +54,6 @@
 							<i class="fa fa-lock" aria-hidden="true"></i>
 						</span>
 					</div>
-					
 					<div class="container-login100-form-btn">
 						<button class="login100-form-btn" type="submit">
 							Login

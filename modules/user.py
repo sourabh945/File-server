@@ -4,6 +4,8 @@ import string
 from csv  import writer
 from modules.errors import error_logs ### this is the file from the error.py in modules for logging errors
 
+from server import re_login_time
+
 class users_module():
 
     session_ids = set()  ### this set store all the session 
@@ -54,3 +56,17 @@ class users_module():
             except Exception as error:
                  error_logs(error,users_module.user.logout)
                  return False
+            
+        def validate_user(self) -> bool:
+            try:
+                if (datetime.datetime.now() - self.time_of_login) >= re_login_time*60*60:
+                    self.logout()
+                    return False
+                else:
+                    if self.session_id in users_module.session_ids and self.username in users_module.logged_users.keys() and users_module.logged_users[self.username] == self:
+                        return True
+                    else:
+                        return False
+            except Exception as error:
+                error_logs(error,users_module.user.validate_user)
+                return False

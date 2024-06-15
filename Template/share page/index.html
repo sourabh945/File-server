@@ -9,49 +9,67 @@
     <title>File</title>
 </head>
 <body>
-    <div class="username">{{username}},         {{session}}</div>
+    <div class="username">
+        <h2>{{username}}</h2>
+    </div>
+    <b>{{session_id}}</b>
     <hr>
-    <h1>Index of "{{path}}"</h1>
+    <h1>Index of "{{parent_folder}}"</h1>
     <h2>Content</h2>
-    <a class="folder" herf="hello"></a>
+    <p id="UI_goUp">
+        <form class="inline" , method="post" action="{{url_for('file_explorer')}}">
+            <input type="hidden" name="item_type" value="up_dir">
+            <input type="hidden" name="parent_folder" value="parent_folder">
+            <button type="submit" name="item_name" value="up_dir" class="link-button">
+                <img src="{{url_for('static',filename='images/folder_up.png')}}" alt="icon">
+                {{up_dir}}
+            </button>
+        </form>
+    </p>
     <div class="content table">
     <table order="">
         <thead>
             <tr>
                 <th>
-                    <a href="">Name</a>
+                    <a>Name</a>
                 </th>
                 <th>
-                    <a href="">Size</a>
-                </th>
-                <th>
-                    <a href="">Last Modified</a>
+                    <a>Size</a>
                 </th>
             </tr>
         </thead>
         <tbody>
+            <form class="inline" method="post" action="{{url_for('file_explorer')}}"
             {% for item in (content) %}
                 <tr>
-                    <table order="">
-                        <tbody>
-                            <tr>
-                                {% if item[1] == "dir" %}
-                                    <a class="file" href="{{item[0]}}">
-                                        <img src="{{url_for('static',filename='images/folder.png')}}" herf="{{item[0]}}">
-                                        {{item[0]}}
-                                    </a>
-                                {% else %}
-                                <a class="{{item[1]}}" href="{{item[0]}}">
-                                    <img src="{{url_for('static',filename='images/file.png')}}" herf="{{item[0]}}">
-                                    {{item[0]}}
-                                </a>
-                                {%endif%}
-                            </tr>
-                        </tbody>
-                    </table>
+                    <td sortable.data="1{{item[0]}}">
+                        <table class="ellipsis">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {% if item[1] == "dir"%}
+                                            <input type="hidden" name="item_type" value="{{item[1]}}">
+                                            <input type="hidden" name="parent_folder" value="{{parent_folder}}">
+                                            <button type="submit" name="item_name" value="{{item[0]}}" class="link-button">
+                                                <img src="{{url_for('static',filename='images/folder.png')}}" alt="icon">
+                                                {{item[0]}}
+                                            </button>
+                                        {% else %}
+                                            <input type="hidden" name="item_type" value="{{item[1]}}">
+                                            <input type="hidden" name="parent_folder" value="{{parent_folder}}">
+                                            <button type="submit" name="item_name" value="{{item[0]}}" class="link-button">
+                                                <img src="{{url_for('static',filename='images/file.png')}}" alt="icon">
+                                                {{item[0]}}
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td sortable.data="{{item[2]}}">{{item[2]}}</td>
                 </tr>
-            {%endfor%}
-            </tr>
+            {% endfor %}   
         </tbody>
     </table>
     </div>
