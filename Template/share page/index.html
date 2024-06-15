@@ -39,7 +39,7 @@
             </tr>
         </thead>
         <tbody>
-            <form class="inline" method="post" action="{{url_for('file_explorer')}}"
+            <form class="inline" method="post" action="{{url_for('file_explorer')}}">
             {% for item in (content) %}
                 <tr>
                     <td sortable.data="1{{item[0]}}">
@@ -70,6 +70,7 @@
                     <td sortable.data="{{item[2]}}">{{item[2]}}</td>
                 </tr>
             {% endfor %}   
+            </form>
         </tbody>
     </table>
     </div>

@@ -4,7 +4,7 @@ import string
 from csv  import writer
 from modules.errors import error_logs ### this is the file from the error.py in modules for logging errors
 
-from server import re_login_time
+re_login_time = 1
 
 class users_module():
 
@@ -59,7 +59,7 @@ class users_module():
             
         def validate_user(self) -> bool:
             try:
-                if (datetime.datetime.now() - self.time_of_login) >= re_login_time*60*60:
+                if (datetime.datetime.now() - self.time_of_login).seconds > re_login_time*60*60:
                     self.logout()
                     return False
                 else:

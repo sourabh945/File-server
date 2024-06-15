@@ -1,10 +1,8 @@
-from flask import Flask , request , redirect , render_template
-
-import os
+from flask import Flask , request , redirect , render_template , send_file , send_from_directory
 
 ################ modules imports ##############
 
-from modules.login_credential import users_credential
+from modules.login_credential import user_credential
 from modules.user import users_module
 from modules.errors import error_logs
 from modules.folder_operator import ls
@@ -17,14 +15,14 @@ folder_path = get_folder()
 
 ##############################################
 
-app = Flask(__name__,template_folder="Templates")
+app = Flask(__name__,template_folder="Template")
 app.config["SESSION_PERMANENT"] = False
 
 ##############################################
 
 def authenticate_user(username,password,ipaddress) -> any:
-    if username in users_credential.keys():
-        if users_credential[username] == password:
+    if username in user_credential.keys():
+        if user_credential[username] == password:
             user = users_module.user(username,ipaddress)
             return True, user
         else:
@@ -53,6 +51,12 @@ def up_folder_path(folder:str) -> str:
 
 ##############################################
 
+@app.route("/")
+def index():
+    return redirect("/login")
+
+##############################################
+
 @app.route("/login",methods=["GET","POST"])
 def login():
     if request.method == "POST":
@@ -63,8 +67,8 @@ def login():
         if status is True:
             return file_explorer(user,folder_path)
         else:
-            return render_template("./login form/index.html", login=False)
-    return render_template("./login form/index.html",login = True)
+            return render_template("./login form/index.html", login="False")
+    return render_template("login form/index.html",login="True")
 
 ################################################
 
@@ -80,15 +84,27 @@ def file_explorer(user,folder_path):
                     return file_explorer(user,folder_path=parent_folder+item_name)
             elif item_type == "file":
                 if validate_folder(parent_folder) is True:
-                    return send_file(user,folder_path+item_name)
+                    return send_file_to_client(user,folder_path+item_name)
             elif item_type == "up_dir":
                 if validate_folder(up_folder_path(parent_folder)) is True:
                     return file_explorer(user,folder_path=up_folder_path(parent_folder))
             else:
-                return file_explorer(user,folder_path)
+                return render_template("share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path)
         else:
-            return render_template("/share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path)
+            return render_template("share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path)
         
 ###################################################
 
-@app.upl
+@app.route('/download_file/{file_name}')
+def send_file_to_client(user,file_path):
+    try:
+        if user.validate_user() is True:
+            return send_file(file_path)
+    except Exception as error:
+        error_logs(error,send_file_to_client)
+        return file_explorer(user,folder_path)
+    
+#################################################
+
+if __name__ == "__main__":
+    app.run(debug=False)

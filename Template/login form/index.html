@@ -24,7 +24,7 @@
 </head>
 <body>
 	<div class="error-message">
-		{% if login is False%}
+		{% if login == "False" %}
 			<h3>Username or password is wrong</h3>
 		{% endif %}
 	</div>
@@ -59,12 +59,6 @@
 							Login
 						</button>
 					</div>
-					<!-- <div class="text-center p-t-136">
-						<a class="txt2" href="{{url_for('admin')}}">
-							Admin login
-							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</a>
-					</div> -->
 				</form>
 			</div>
 		</div>
