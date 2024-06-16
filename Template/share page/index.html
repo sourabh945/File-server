@@ -17,12 +17,14 @@
     <h1>Index of "{{parent_folder}}"</h1>
     <h2>Content</h2>
     <p id="UI_goUp">
-        <form class="inline" , method="post" action="{{url_for('file_explorer')}}">
+        <form class="inline" , method="post" action="{{url_for('file_explorer',secret={{secret}})}}">
             <input type="hidden" name="item_type" value="up_dir">
             <input type="hidden" name="parent_folder" value="parent_folder">
             <button type="submit" name="item_name" value="up_dir" class="link-button">
-                <img src="{{url_for('static',filename='images/folder_up.png')}}" alt="icon">
-                {{up_dir}}
+                <a class="file">
+                    <img src="{{url_for('static',filename='images/folder_up.png')}}">
+                    {{up_dir}}
+                </a>
             </button>
         </form>
     </p>
@@ -39,7 +41,7 @@
             </tr>
         </thead>
         <tbody>
-            <form class="inline" method="post" action="{{url_for('file_explorer')}}">
+            <form class="inline" method="post" action="{{url_for('file_explorer',{{secret}})}}">
             {% for item in (content) %}
                 <tr>
                     <td sortable.data="1{{item[0]}}">
@@ -51,15 +53,19 @@
                                             <input type="hidden" name="item_type" value="{{item[1]}}">
                                             <input type="hidden" name="parent_folder" value="{{parent_folder}}">
                                             <button type="submit" name="item_name" value="{{item[0]}}" class="link-button">
-                                                <img src="{{url_for('static',filename='images/folder.png')}}" alt="icon">
-                                                {{item[0]}}
+                                                <a class="file">
+                                                    <img src="{{url_for('static',filename='images/folder.png')}}" alt="file">
+                                                    {{item[0]}}
+                                                </a>
                                             </button>
                                         {% else %}
                                             <input type="hidden" name="item_type" value="{{item[1]}}">
                                             <input type="hidden" name="parent_folder" value="{{parent_folder}}">
                                             <button type="submit" name="item_name" value="{{item[0]}}" class="link-button">
-                                                <img src="{{url_for('static',filename='images/file.png')}}" alt="icon">
-                                                {{item[0]}}
+                                                <a class="file">
+                                                    <img src="{{url_for('static',filename='images/file.png')}}" alt="file">
+                                                    {{item[0]}}
+                                                </a>
                                             </button>
                                         {% endif %}
                                     </td>
