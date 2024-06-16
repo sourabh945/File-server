@@ -17,7 +17,7 @@
     <h1>Index of "{{parent_folder}}"</h1>
     <h2>Content</h2>
     <p id="UI_goUp">
-        <form class="inline" , method="post" action="{{url_for('file_explorer',secret={{secret}})}}">
+        <form class="inline" , method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
             <input type="hidden" name="item_type" value="up_dir">
             <input type="hidden" name="parent_folder" value="parent_folder">
             <button type="submit" name="item_name" value="up_dir" class="link-button">
@@ -41,7 +41,7 @@
             </tr>
         </thead>
         <tbody>
-            <form class="inline" method="post" action="{{url_for('file_explorer',{{secret}})}}">
+            <form class="inline" method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
             {% for item in (content) %}
                 <tr>
                     <td sortable.data="1{{item[0]}}">
