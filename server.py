@@ -188,4 +188,4 @@ def send_file_to_client():
 #################################################
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port='5000',debug=True,threaded=True,ssl_context=('./certificates/cert.pem','./certificates/key.pem'))
+    app.run(host='0.0.0.0',port='5000',debug=True,threaded=True)
