@@ -33,7 +33,15 @@
             <button type="submit" name="item_name" value="refresh" class="link-button">
                 <a class="file">
                     <img src="{{url_for('static',filename='images/loop.png')}}">
-                    refresh 
+                    Refresh 
+                </a>
+            </button>
+            <input type="hidden" name="item_type" value="upload">
+            <input type="hidden" name="parent_folder" value="{{parent_folder}}">
+            <button type="submit" name="item_name" value="upload" class="link-button">
+                <a class="file">
+                    <img src="{{url_for('static',filename='images/upload.png')}}">
+                    Upload
                 </a>
             </button>
         </form>
@@ -71,7 +79,7 @@
                                             </button>
                                         </form>
                                         {% else %}
-                                            {% if item[2] != 0 %}
+                                            {% if item[2] != '0 B' %}
                                             <form class="inline" method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
                                                 <input type="hidden" name="item_type" value="{{item[1]}}">
                                                 <input type="hidden" name="parent_folder" value="{{parent_folder}}">
@@ -98,7 +106,9 @@
                             </tbody>
                         </table>
                     </td>
+                    {% if item[1] == "file" %}
                     <td sortable.data="{{item[2]}}">{{item[2]}}</td>
+                    {% endif %}
                 </tr>
             {% endfor %}   
         </tbody>

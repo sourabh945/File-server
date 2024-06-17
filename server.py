@@ -1,5 +1,5 @@
 from flask import Flask , request , redirect , render_template , send_file , url_for , send_from_directory
-
+from OpenSSL import SSL
 
 ################ modules imports ##############
 
@@ -26,6 +26,12 @@ app.config["SESSION_PERMANENT"] = False
 app.config['UPLOAD_FOLDER'] = initial_folder_path
 
 ##############################################
+
+# CERT_FILE = "./certificates/cert.pem"
+# KEY_FILE = "./certificates/key.pem"
+
+# context = SSL.Context(SSL.PROTOCOL_TLSv1_2)
+# context.load_cert_chain(CERT_FILE,KEY_FILE)
 
 ##############################################
 
@@ -182,4 +188,4 @@ def send_file_to_client():
 #################################################
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port='5000',debug=True,threaded=True)
+    app.run(host='0.0.0.0',port='5000',debug=True,threaded=True,ssl_context=('./certificates/cert.pem','./certificates/key.pem'))
