@@ -1,4 +1,4 @@
-from flask import Flask , request , redirect , render_template , send_file , url_for
+from flask import Flask , request , redirect , render_template , send_file , url_for , send_from_directory
 
 
 ################ modules imports ##############
@@ -23,6 +23,7 @@ parser = dict()
 
 app = Flask(__name__,template_folder="Template")
 app.config["SESSION_PERMANENT"] = False
+app.config['UPLOAD_FOLDER'] = initial_folder_path
 
 ##############################################
 
@@ -41,21 +42,34 @@ def authenticate_user(username,password,ipaddress) -> any:
 ##############################################
 
 def validate_folder(folder:str) -> bool:
-    daughter_folder = folder.split("/")
-    parent_folder = initial_folder_path.split("/")
-    for i in range(len(parent_folder)):
-        if parent_folder[i] != daughter_folder[i]:
-            return False
-    return True
+    try:
+        daughter_folder = folder.split("/")
+        parent_folder = initial_folder_path.split("/")
+        for i in range(len(parent_folder)):
+            if parent_folder[i] != daughter_folder[i]:
+                return False
+        return True
+    except Exception as error:
+        error_logs(error,validate_folder)
+        return False
 
 ##############################################
 
 def up_folder_path(folder:str) -> str:
     daughter_folder = folder.split("/")
-    result_path = ""
-    for i in range(len(daughter_folder)-1):
+    result_path = daughter_folder[0]
+    for i in range(1,len(daughter_folder)-1):
         result_path = result_path + "/" + daughter_folder[i]
     return result_path
+
+##############################################
+
+def send_file_helper(path):
+    new_path = path.split("/")
+    res_path , filename = new_path[0] , new_path[-1]
+    for i in range(1,len(new_path)-1):
+        res_path = res_path + "/" + new_path[i]
+    return res_path,filename
 
 ##############################################
 
@@ -68,9 +82,12 @@ def index():
 @app.route("/login",methods=["GET","POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("pass")
-        ip_address = request.remote_addr
+        try:
+            username = request.form.get("username")
+            password = request.form.get("pass")
+            ip_address = request.remote_addr
+        except:
+            return render_template("login form/index.html",login='True')
         status, user = authenticate_user(username,password,ip_address)
         if status is True:
             secret = secret_generator(16)
@@ -97,26 +114,51 @@ def file_explorer():
             item_name = request.form.get("item_name")
             parent_folder = request.form.get("parent_folder")
             if item_type == "dir":
-                if validate_folder(parent_folder+item_name) is True:
+                if validate_folder(parent_folder+"/"+item_name) is True:
                     secret = secret_generator(16)
-                    parser[secret] = [user,parent_folder+item_name]
+                    parser[secret] = [user,parent_folder+"/"+item_name]
                     return redirect(url_for('.file_explorer',parser_key=secret))
+                else:
+                    secret = secret_generator(16)
+                    parser[secret] = [user,initial_folder_path]
+                    return redirect(url_for('.file_explorer',parser_key=secret)) 
             elif item_type == "file":
                 if validate_folder(parent_folder) is True:
                     secret = secret_generator(16)
-                    parser[secret] = [user,parent_folder+item_name]
+                    parser[secret] = [user,parent_folder+"/"+item_name]
                     return redirect(url_for('.send_file_to_client',parser_key=secret))
+                else:
+                    secret = secret_generator(16)
+                    parser[secret] = [user,initial_folder_path]
+                    return redirect(url_for('.file_explorer',parser_key=secret))
             elif item_type == "up_dir":
                 if validate_folder(up_folder_path(parent_folder)) is True:
                     secret = secret_generator(16)
                     parser[secret] = [user,up_folder_path(parent_folder)]
                     return redirect(url_for('.file_explorer',parser_key=secret))
+                else:
+                    secret = secret_generator(16)
+                    parser[secret] = [user,initial_folder_path]
+                    return redirect(url_for('.file_explorer',parser_key=secret))
+            elif item_type == "refresh":
+                if validate_folder(parent_folder) is True:
+                    secret = secret_generator(16)
+                    parser[secret] = [user,initial_folder_path]
+                    return redirect(url_for('.file_explorer',parser_key=secret))
+                else:
+                    secret = secret_generator(16)
+                    parser[secret] = [user,initial_folder_path]
+                    return redirect(url_for('.file_explorer',parser_key=secret))
             else:
-                return render_template("share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path)
-        elif request.method == "GET":
+                secret = secret_generator(16)
+                parser[secret] = [user,folder_path]
+                return render_template("share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path,secret=secret)
+        elif request.method =="GET":
             secret = secret_generator(16)
             parser[secret] = [user,folder_path]
             return render_template("share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path,secret=secret)
+    else:
+        return redirect('/login')
         
 ###################################################
 
@@ -125,13 +167,12 @@ def send_file_to_client():
     try:
         secret = request.args['parser_key']
         user , file_path = parser[secret]
-        del parser[secret]
-        secret_set.remove(secret)
     except:
         return redirect("/login")
     try:
         if user.validate_user() is True:
-            return send_file(file_path)
+            file_path_ , filename = send_file_helper(file_path)
+            return send_from_directory(file_path_,filename)
     except Exception as error:
         error_logs(error,send_file_to_client)
         secret = secret_generator(16)
@@ -141,4 +182,4 @@ def send_file_to_client():
 #################################################
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0',port='5000',debug=True,threaded=True)

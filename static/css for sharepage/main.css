@@ -82,7 +82,27 @@
   .file {
     margin-inline-start: 20px;
   }
-  .dir::before ,
+  .dir > img {
+    margin-inline-end: 4px;
+    margin-inline-start: -20px;
+    max-width: 16px;
+    max-height: 16px;
+    vertical-align: middle;
+  }
+  .refresh > img{
+    margin-inline-end: 4px;
+    margin-inline-start: -20px;
+    max-width: 16px;
+    max-height: 16px;
+    vertical-align: middle;
+  }
+  .up_to > img{
+    margin-inline-end: 4px;
+    margin-inline-start: -20px;
+    max-width: 16px;
+    max-height: 16px;
+    vertical-align: middle;
+  }
   .file > img {
     margin-inline-end: 4px;
     margin-inline-start: -20px;
@@ -90,8 +110,6 @@
     max-height: 16px;
     vertical-align: middle;
   }
-  .dir::before {
-    content: url(resource://content-accessible/html/folder.png);
-  }
+  
   
   

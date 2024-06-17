@@ -9,25 +9,36 @@
     <title>File</title>
 </head>
 <body>
-    <div class="username">
-        <h2>{{username}}</h2>
-    </div>
-    <b>{{session_id}}</b>
-    <hr>
+     <h2>Hello, {{username}}!</h2>
+    
+    <hr class="1">
+    <b>SESSION ID : {{session_id}}</b>
+    <hr class="2">
     <h1>Index of "{{parent_folder}}"</h1>
-    <h2>Content</h2>
+    <hr>
+    
     <p id="UI_goUp">
+        <h4>Options: </h4>
         <form class="inline" , method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
             <input type="hidden" name="item_type" value="up_dir">
-            <input type="hidden" name="parent_folder" value="parent_folder">
+            <input type="hidden" name="parent_folder" value="{{parent_folder}}">
             <button type="submit" name="item_name" value="up_dir" class="link-button">
                 <a class="file">
                     <img src="{{url_for('static',filename='images/folder_up.png')}}">
-                    {{up_dir}}
+                    Up_to_dir
+                </a>
+            </button>
+            <input type="hidden" name="item_type" value="refresh">
+            <input type="hidden" name="parent_folder" value="{{parent_folder}}">
+            <button type="submit" name="item_name" value="refresh" class="link-button">
+                <a class="file">
+                    <img src="{{url_for('static',filename='images/loop.png')}}">
+                    refresh 
                 </a>
             </button>
         </form>
     </p>
+    <hr>
     <div class="content table">
     <table order="">
         <thead>
@@ -41,7 +52,6 @@
             </tr>
         </thead>
         <tbody>
-            <form class="inline" method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
             {% for item in (content) %}
                 <tr>
                     <td sortable.data="1{{item[0]}}">
@@ -50,6 +60,7 @@
                                 <tr>
                                     <td>
                                         {% if item[1] == "dir"%}
+                                        <form class="inline" method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
                                             <input type="hidden" name="item_type" value="{{item[1]}}">
                                             <input type="hidden" name="parent_folder" value="{{parent_folder}}">
                                             <button type="submit" name="item_name" value="{{item[0]}}" class="link-button">
@@ -58,15 +69,29 @@
                                                     {{item[0]}}
                                                 </a>
                                             </button>
+                                        </form>
                                         {% else %}
+                                            {% if item[2] != 0 %}
+                                            <form class="inline" method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
+                                                <input type="hidden" name="item_type" value="{{item[1]}}">
+                                                <input type="hidden" name="parent_folder" value="{{parent_folder}}">
+                                                <button type="" name="item_name" value="{{item[0]}}" class="link-button">
+                                                    <a class="file">
+                                                        <img src="{{url_for('static',filename='images/file.png')}}" alt="file">
+                                                        {{item[0]}}
+                                                    </a>
+                                                </button>
+                                            </form>
+                                            {% else %}
                                             <input type="hidden" name="item_type" value="{{item[1]}}">
                                             <input type="hidden" name="parent_folder" value="{{parent_folder}}">
-                                            <button type="submit" name="item_name" value="{{item[0]}}" class="link-button">
+                                            <button type="" name="item_name" value="{{item[0]}}" class="link-button">
                                                 <a class="file">
                                                     <img src="{{url_for('static',filename='images/file.png')}}" alt="file">
                                                     {{item[0]}}
                                                 </a>
                                             </button>
+                                            {% endif %}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -76,7 +101,6 @@
                     <td sortable.data="{{item[2]}}">{{item[2]}}</td>
                 </tr>
             {% endfor %}   
-            </form>
         </tbody>
     </table>
     </div>

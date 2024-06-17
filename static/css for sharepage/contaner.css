@@ -25,7 +25,6 @@
   h1 {
     font-size: 160%;
     margin: 0 0 .6em;
-    border-bottom: 1px solid ThreeDLightShadow;
     font-weight: bold;
     padding-top: 2%;
     padding-bottom: 2%;
@@ -34,7 +33,6 @@
   h2 {
     font-size: 140%;
     margin: 0 0 .6em;
-    border-bottom: 1px solid ThreeDLightShadow;
     font-weight: normal;
     font-style: italic;
     padding-bottom: 2%;
@@ -43,11 +41,25 @@
   h3 {
     font-size: 100%;
     margin: 0 0 .6em;
-    border-bottom: 1px solid ThreeDLightShadow;
     font-weight: bold;
     font-style: italic;
     padding-bottom: 2%;
     
+  }
+
+  h4 {
+    font-size: 100%;
+    font-weight: bold;
+    font-style: italic;
+    margin-inline-end: auto;
+  }
+
+  hr.class-1 {
+    border-top: 3px double ;
+  }
+
+  hr.class-2 {
+    border-top : 5px solid;
   }
   
   a {
