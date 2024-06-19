@@ -15,7 +15,7 @@ def ls(path:str) -> list[tuple[str,str,int]]:
                 size_ = f'{round(size,3)} KB'
             elif size >= 200 and size < 800*1024:
                 size = size/1024
-                size_ = f'{round(size),1} MB'
+                size_ = f'{round(size,2)} MB'
             else:
                 size = size/(1024*1024)
                 size_ = f'{round(size,3)} GB'

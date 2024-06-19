@@ -1,5 +1,5 @@
 from flask import Flask , request , redirect , render_template , send_file , url_for , send_from_directory
-from OpenSSL import SSL
+
 
 ################ modules imports ##############
 
@@ -49,6 +49,8 @@ def authenticate_user(username,password,ipaddress) -> any:
 
 def validate_folder(folder:str) -> bool:
     try:
+        if daughter_folder == initial_folder_path:
+            return True
         daughter_folder = folder.split("/")
         parent_folder = initial_folder_path.split("/")
         for i in range(len(parent_folder)):
@@ -138,6 +140,10 @@ def file_explorer():
                     parser[secret] = [user,initial_folder_path]
                     return redirect(url_for('.file_explorer',parser_key=secret))
             elif item_type == "up_dir":
+                if parent_folder == initial_folder_path:
+                    secret = secret_generator(16)
+                    parser[secret] = [user,up_folder_path(parent_folder)]
+                    return redirect(url_for('.file_explorer',parser_key=secret))
                 if validate_folder(up_folder_path(parent_folder)) is True:
                     secret = secret_generator(16)
                     parser[secret] = [user,up_folder_path(parent_folder)]

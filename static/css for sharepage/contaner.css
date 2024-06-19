@@ -140,3 +140,10 @@
     background: url(chrome://global/skin/dirListing/folder.png) center/16px no-repeat;
   }
   
+  .link-button {
+    border-spacing: 2%;
+  }
+
+  .inline {
+    padding-bottom: 1%;
+  }
