@@ -19,7 +19,7 @@
     
     <p id="UI_goUp">
         <h4>Options: </h4>
-        <form class="options_form"  method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
+        <form class="inline"  method="post" action="{{url_for('file_explorer',parser_key=secret)}}">
             <input type="hidden" name="item_type" value="up_dir">
             <input type="hidden" name="parent_folder" value="{{parent_folder}}">
             <button type="submit" name="item_name" value="up_dir" class="link-button">

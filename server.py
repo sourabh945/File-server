@@ -49,10 +49,10 @@ def authenticate_user(username,password,ipaddress) -> any:
 
 def validate_folder(folder:str) -> bool:
     try:
-        if daughter_folder == initial_folder_path:
-            return True
         daughter_folder = folder.split("/")
         parent_folder = initial_folder_path.split("/")
+        if daughter_folder.__len__() < parent_folder.__len__():
+            return False
         for i in range(len(parent_folder)):
             if parent_folder[i] != daughter_folder[i]:
                 return False
@@ -128,8 +128,9 @@ def file_explorer():
                     return redirect(url_for('.file_explorer',parser_key=secret))
                 else:
                     secret = secret_generator(16)
-                    parser[secret] = [user,initial_folder_path]
-                    return redirect(url_for('.file_explorer',parser_key=secret)) 
+                    parser[secret] = [user,parent_folder]
+                    message = "Page is Forbidden to access. You have no permission to access this page"
+                    return render_template('error page/index.html',message=message,code=403,secret=secret)
             elif item_type == "file":
                 if validate_folder(parent_folder) is True:
                     secret = secret_generator(16)
@@ -137,21 +138,19 @@ def file_explorer():
                     return redirect(url_for('.send_file_to_client',parser_key=secret))
                 else:
                     secret = secret_generator(16)
-                    parser[secret] = [user,initial_folder_path]
-                    return redirect(url_for('.file_explorer',parser_key=secret))
+                    parser[secret] = [user,parent_folder]
+                    message = "Page is Forbidden to access. You have no permission to access this page"
+                    return render_template('error page/index.html',message=message,code=403,secret=secret)
             elif item_type == "up_dir":
-                if parent_folder == initial_folder_path:
-                    secret = secret_generator(16)
-                    parser[secret] = [user,up_folder_path(parent_folder)]
-                    return redirect(url_for('.file_explorer',parser_key=secret))
                 if validate_folder(up_folder_path(parent_folder)) is True:
                     secret = secret_generator(16)
                     parser[secret] = [user,up_folder_path(parent_folder)]
                     return redirect(url_for('.file_explorer',parser_key=secret))
                 else:
                     secret = secret_generator(16)
-                    parser[secret] = [user,initial_folder_path]
-                    return redirect(url_for('.file_explorer',parser_key=secret))
+                    parser[secret] = [user,parent_folder]
+                    message = "Page is Forbidden to access. You have no permission to access this page"
+                    return render_template('error page/index.html',message=message,code=403,secret=secret),403
             elif item_type == "refresh":
                 if validate_folder(parent_folder) is True:
                     secret = secret_generator(16)
@@ -159,12 +158,14 @@ def file_explorer():
                     return redirect(url_for('.file_explorer',parser_key=secret))
                 else:
                     secret = secret_generator(16)
-                    parser[secret] = [user,initial_folder_path]
-                    return redirect(url_for('.file_explorer',parser_key=secret))
+                    parser[secret] = [user,parent_folder]
+                    message = "Page is Forbidden to access. You have no permission to access this page"
+                    return render_template('error page/index.html',message=message,code=403,secret=secret),403
             else:
                 secret = secret_generator(16)
-                parser[secret] = [user,folder_path]
-                return render_template("share page/index.html",content=ls(folder_path),username=user.username,session_id=user.session_id,parent_folder=folder_path,secret=secret)
+                parser[secret] = [user,parent_folder]
+                message = "Page is not found. The request is invalid"
+                return render_template('error page/index.html',message=message,code=404,secret=secret),404
         elif request.method =="GET":
             secret = secret_generator(16)
             parser[secret] = [user,folder_path]
