@@ -1,6 +1,6 @@
 import os 
 import json
-from modules.errors import error_logs
+from modules.errors_logger import error_logs
 
 ### this module is use to generate the all the necessary file we need to run the service
 

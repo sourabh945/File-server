@@ -2,7 +2,7 @@ import datetime
 import random 
 import string
 from csv  import writer
-from modules.errors import error_logs ### this is the file from the error.py in modules for logging errors
+from modules.errors_logger import error_logs ### this is the file from the error.py in modules for logging errors
 
 re_login_time = 1
 

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import filedialog
-from modules.errors import error_logs
+from modules.errors_logger import error_logs
 
 def get_folder():
     try:

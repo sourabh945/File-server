@@ -5,10 +5,11 @@ from flask import Flask , request , redirect , render_template , send_file , url
 
 from modules.login_credential import user_credential
 from modules.user import users_module
-from modules.errors import error_logs
+from modules.errors_logger import error_logs
 from modules.folder_operator import ls
 from modules.folder_selector import get_folder
 from modules.random_secret import secret_generator , secret_set
+from modules.download_logger import download_logs
 
 ############ usr defined parameters ############
 
@@ -72,12 +73,6 @@ def up_folder_path(folder:str) -> str:
 
 ##############################################
 
-def send_file_helper(path):
-    new_path = path.split("/")
-    res_path , filename = new_path[0] , new_path[-1]
-    for i in range(1,len(new_path)-1):
-        res_path = res_path + "/" + new_path[i]
-    return res_path,filename
 
 ##############################################
 
@@ -180,12 +175,16 @@ def send_file_to_client():
     try:
         secret = request.args['parser_key']
         user , file_path = parser[secret]
+        del parser[secret]
+        
     except:
         return redirect("/login")
     try:
         if user.validate_user() is True:
-            file_path_ , filename = send_file_helper(file_path)
-            return send_from_directory(file_path_,filename)
+            download_name = file_path.split("/")[-1]
+            if download_logs(user,file_path):
+                return send_file(file_path,as_attachment=True,download_name=download_name)
+            return redirect("/login")
     except Exception as error:
         error_logs(error,send_file_to_client)
         secret = secret_generator(16)

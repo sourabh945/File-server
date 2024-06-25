@@ -1,6 +1,6 @@
 import os
 
-from modules.errors import error_logs
+from modules.errors_logger import error_logs
 
 
 def ls(path:str) -> list[tuple[str,str,int]]:
